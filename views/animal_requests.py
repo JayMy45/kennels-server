@@ -55,4 +55,4 @@ def create_animal(animal):
     ANIMALS.append(animal)
 
     # Return the dictionary with `id` property added
-    return ANIMALS
+    return animal
