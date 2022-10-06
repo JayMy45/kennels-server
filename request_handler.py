@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_animals
 from views import get_all_animals, get_single_animal, create_animal
 from views import get_all_employees, get_single_employee, create_employee
-from views import get_all_locations, get_single_location
+from views import get_all_locations, get_single_location, create_location
 from views import get_all_customers, get_single_customer, create_customer
 
 
@@ -96,6 +96,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         new_animal = None
         new_employee = None
         new_customer = None
+        new_location = None
 
         # Add a new animal to the list. Don't worry about
         # the orange squiggle, you'll define the create_animal
@@ -112,6 +113,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "customers":
             new_customer = create_customer(post_body)
             self.wfile.write(json.dumps(new_customer).encode())
+        
+        if resource == "locations":
+            new_locations = create_location(post_body)
+            self.wfile.write(json.dumps(new_locations).encode())
         # Encode the new animal and send in response
 
     # A method that handles any PUT request.
