@@ -1,10 +1,10 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_animals
-from views import get_all_animals, get_single_animal, create_animal
-from views import get_all_employees, get_single_employee, create_employee
-from views import get_all_locations, get_single_location, create_location
-from views import get_all_customers, get_single_customer, create_customer
+from views import get_all_animals, get_single_animal, create_animal, delete_animal
+from views import get_all_employees, get_single_employee, create_employee, delete_employee
+from views import get_all_locations, get_single_location, create_location, delete_location
+from views import get_all_customers, get_single_customer, create_customer, delete_customer
 
 
 # Here's a class. It inherits from another class.
@@ -115,8 +115,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(new_customer).encode())
         
         if resource == "locations":
-            new_locations = create_location(post_body)
-            self.wfile.write(json.dumps(new_locations).encode())
+            new_location = create_location(post_body)
+            self.wfile.write(json.dumps(new_location).encode())
         # Encode the new animal and send in response
 
     # A method that handles any PUT request.
@@ -148,6 +148,40 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers',
                          'X-Requested-With, Content-Type, Accept')
         self.end_headers()
+
+    # * DELETE METHOD 
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            delete_animal(id)
+
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
+        
+        # Delete a single customer from list
+        # ? has to have a separate wfile line.
+        if resource == "customers":
+            delete_customer(id)
+
+        self.wfile.write("".encode())
+       
+        # Delete a single location from list
+        # ? has to have a separate wfile line.
+        if resource == "locations":
+            delete_location(id)
+
+        self.wfile.write("".encode())
+        # Delete a single employee from list
+        if resource == "employees":
+            delete_employee(id)
+
+        self.wfile.write("".encode())
 
 
 # This function is not inside the class. It is the starting

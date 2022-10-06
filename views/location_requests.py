@@ -1,3 +1,6 @@
+from operator import index
+
+
 LOCATIONS = [
     {
         "id": 1,
@@ -29,9 +32,18 @@ def get_single_location(id):
 
     return requested_location
 
+# condensed function to create and add "id". Refer to animals_request.py for expanded explanation view.
 def create_location(location):
     max_id = LOCATIONS[-1]["id"]
     new_id = max_id + 1
     location["id"] = new_id
     LOCATIONS.append(location)
     return location
+
+def delete_location(id):
+    location_index = -1
+    for index, location in enumerate(LOCATIONS):
+        if location["id"] == id:
+            location_index = index
+        if location_index >=0:
+            LOCATIONS.pop(location_index)
