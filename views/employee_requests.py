@@ -2,7 +2,7 @@ EMPLOYEES = [
     {
         "id": 1,
         "name": "Jenna Solis"
-    }
+    },
 ]
 
 def get_all_employees():
