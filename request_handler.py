@@ -1,10 +1,9 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals
-from views import get_all_animals, get_single_animal, create_animal, delete_animal
-from views import get_all_employees, get_single_employee, create_employee, delete_employee
-from views import get_all_locations, get_single_location, create_location, delete_location
-from views import get_all_customers, get_single_customer, create_customer, delete_customer
+from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
+from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
+from views import get_all_locations, get_single_location, create_location, delete_location, update_location
+from views import get_all_customers, get_single_customer, create_customer, delete_customer, update_customer
 
 
 # Here's a class. It inherits from another class.
@@ -12,6 +11,8 @@ from views import get_all_customers, get_single_customer, create_customer, delet
 # work together for a common purpose. In this case, that
 # common purpose is to respond to HTTP requests from a client.
 class HandleRequests(BaseHTTPRequestHandler):
+    """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
+    """
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
         # path is "/animals/1", the resulting list will
@@ -34,8 +35,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         return (resource, id)  # This is a tuple
     # This is a Docstring it should be at the beginning of all classes and functions
     # It gives a description of the class or function
-    """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
-    """
 
     # Here's a class function
 
@@ -121,8 +120,36 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # A method that handles any PUT request.
     def do_PUT(self):
-        """Handles PUT requests to the server"""
-        self.do_PUT()
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            update_animal(id, post_body)
+
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
+
+        #Encode the new employees and send in response
+        if resource == "employees":
+            update_employee(id, post_body)
+        self.wfile.write("".encode())
+
+        #Encode the new locations and send in response
+        if resource == "locations":
+            update_location(id, post_body)
+        self.wfile.write("".encode())
+      
+        #Encode the new locations and send in response
+        if resource == "customers":
+            update_customer(id, post_body)
+        self.wfile.write("".encode())
+  
 
     def _set_headers(self, status):
         # Notice this Docstring also includes information about the arguments passed to the function
@@ -182,7 +209,6 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_employee(id)
 
         self.wfile.write("".encode())
-
 
 # This function is not inside the class. It is the starting
 # point of this application.
