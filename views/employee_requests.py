@@ -39,3 +39,11 @@ def create_employee(employee):
 
     #  Return the dictionary with `id` property added
     return employee
+
+def delete_employee(id):
+    employee_index = -1
+    for index, employee in enumerate(EMPLOYEES):
+        if employee["id"] == id:
+            employee_index = index
+        if employee_index >=0:
+            EMPLOYEES.pop(employee_index)
