@@ -45,7 +45,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-       
+        # self._set_headers(200)
 
         response = {}  # Default response
 
@@ -56,21 +56,35 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             if id is not None:
                 response = get_single_animal(id)
-                if response is not None:
-                    self._set_headers(200)  # if id is found set header to 200
 
-                else:  
-                    self._set_headers(404)  #if id is not found set header to 404...
+#comment from here
+
+                if response is not None:
+                    self._set_headers(200)
+                    
+                else:
+                    self._set_headers(404)          
                     response = { "message": f"Animal {id} is out playing right now" }
+
+#to here...
+
    
             else:
+                self._set_headers(200)
                 response = get_all_animals()
 
         if resource == "locations":
             if id is not None:
                 response = get_single_location(id)
 
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Location {id} is not open"}
+
             else:
+                self._set_headers(200)
                 response = get_all_locations()
 
         if resource == "employees":

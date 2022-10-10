@@ -14,14 +14,14 @@ ANIMALS = [
         "name": "Roman",
         "species": "Dog",
         "locationId": 1,
-        "customerId": 2
+        "customerId": 4
     },
     {
         "id": 3,
         "name": "Blue",
         "species": "Cat",
         "locationId": 2,
-        "customerId": 1
+        "customerId": 4
     },
     {
         "id": 4,
