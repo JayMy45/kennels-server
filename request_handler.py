@@ -90,15 +90,27 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "employees":
             if id is not None:
                 response = get_single_employee(id)
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Employee {id} does not exist"}
 
             else:
+                self._set_headers(200)
                 response = get_all_employees()
 
         if resource == "customers":
             if id is not None:
                 response = get_single_customer(id)
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Customer {id} does not exist"}
 
             else:
+                self._set_headers(200)
                 response = get_all_customers()
 
         self.wfile.write(json.dumps(response).encode())
