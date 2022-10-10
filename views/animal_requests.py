@@ -1,3 +1,6 @@
+from .location_requests import get_single_location
+from .customer_requests import get_single_customer 
+
 ANIMALS = [
     {
         "id": 1,
@@ -11,20 +14,20 @@ ANIMALS = [
         "name": "Roman",
         "species": "Dog",
         "locationId": 1,
-        "customerId": 2
+        "customerId": 4
     },
     {
         "id": 3,
         "name": "Blue",
         "species": "Cat",
         "locationId": 2,
-        "customerId": 1
+        "customerId": 4
     },
     {
-        "id": 2,
+        "id": 4,
         "name": "Eleanor",
         "species": "Dog",
-        "location": 1,
+        "locationId": 1,
         "customerId": 2,
         "status": "Admitted"
     }
@@ -45,7 +48,24 @@ def get_single_animal(id):
         # Dictionaries in Python use [] notation to find a key
         # instead of the dot notation that JavaScript used.
         if animal["id"] == id:
+
+            # ~ return matching animals
             requested_animal = animal
+
+            # ~ return matching locations along with animals
+            matching_location = get_single_location(requested_animal["locationId"])
+            requested_animal["location"] = matching_location
+
+            #* use del (delete) method to remove locationId key when a single animal is searched
+            del animal["locationId"]
+
+            # ~ return matching customers along with animals
+            matching_customer = get_single_customer(requested_animal["customerId"])
+            requested_animal["customer"] = matching_customer
+            
+            #* use del (delete) method to remove customerId key when a single animal is searched
+            del animal["customerId"]
+
 
     return requested_animal
 

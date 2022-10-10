@@ -10,9 +10,14 @@ from views import get_all_customers, get_single_customer, create_customer, delet
 # For now, think of a class as a container for functions that
 # work together for a common purpose. In this case, that
 # common purpose is to respond to HTTP requests from a client.
+
 class HandleRequests(BaseHTTPRequestHandler):
+
+    # This is a Docstring it should be at the beginning of all classes and functions
+    # It gives a description of the class or function
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
+
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
         # path is "/animals/1", the resulting list will
@@ -33,47 +38,79 @@ class HandleRequests(BaseHTTPRequestHandler):
             pass  # Request had trailing slash: /animals/
 
         return (resource, id)  # This is a tuple
-    # This is a Docstring it should be at the beginning of all classes and functions
-    # It gives a description of the class or function
 
+    
     # Here's a class function
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
-
     def do_GET(self):
-        self._set_headers(200)
+        # self._set_headers(200)
+
         response = {}  # Default response
 
         # Parse the URL and capture the tuple that is returned
         (resource, id) = self.parse_url(self.path)
 
         if resource == "animals":
+
             if id is not None:
                 response = get_single_animal(id)
 
+#comment from here
+
+                if response is not None:
+                    self._set_headers(200)
+                    
+                else:
+                    self._set_headers(404)          
+                    response = { "message": f"Animal {id} is out playing right now" }
+
+#to here...
+
+   
             else:
+                self._set_headers(200)
                 response = get_all_animals()
 
         if resource == "locations":
             if id is not None:
                 response = get_single_location(id)
 
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Location {id} is not open"}
+
             else:
+                self._set_headers(200)
                 response = get_all_locations()
 
         if resource == "employees":
             if id is not None:
                 response = get_single_employee(id)
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Employee {id} does not exist"}
 
             else:
+                self._set_headers(200)
                 response = get_all_employees()
 
         if resource == "customers":
             if id is not None:
                 response = get_single_customer(id)
+                if response is not None:
+                    self._set_headers(200)
+                else:
+                    self._set_headers(404)
+                    response = {"message": f"Customer {id} does not exist"}
 
             else:
+                self._set_headers(200)
                 response = get_all_customers()
 
         self.wfile.write(json.dumps(response).encode())
