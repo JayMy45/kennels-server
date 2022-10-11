@@ -57,17 +57,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_animal(id)
 
-#comment from here
-
                 if response is not None:
                     self._set_headers(200)
                     
                 else:
                     self._set_headers(404)          
                     response = { "message": f"Animal {id} is out playing right now" }
-
-#to here...
-
    
             else:
                 self._set_headers(200)
