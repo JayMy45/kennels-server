@@ -239,17 +239,28 @@ class HandleRequests(BaseHTTPRequestHandler):
     # * DELETE METHOD 
     def do_DELETE(self):
         # Set a 204 response code
-        self._set_headers(204)
+        # self._set_headers(204)
+
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
+        #* customer needs to contact company to have data deleted
+        #* so need to send an message along with status (405) Method Not Allowed
+
+        #* first initialize response
+
+        response = None
+
         # Delete a single animal from the list
         if resource == "animals":
-            delete_animal(id)
+            self._set_headers(405)
+            response = { "message": f"Deleting animals requires contacting the company directly"}
+            
+            # delete_animal(id)
 
         # Encode the new animal and send in response
-        self.wfile.write("".encode())
+        self.wfile.write(json.dumps(response).encode())
         
         # Delete a single customer from list
         # ? has to have a separate wfile line.
