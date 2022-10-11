@@ -118,7 +118,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
     def do_POST(self):
-        self._set_headers(201)
+        # self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
 
@@ -151,8 +151,14 @@ class HandleRequests(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(new_customer).encode())
         
         if resource == "locations":
-            new_location = create_location(post_body)
-            self.wfile.write(json.dumps(new_location).encode())
+            if "name" in post_body and "address" in post_body:
+                self._set_headers(201)
+                new_location = create_location(post_body)
+                
+            else:
+                self._set_headers(400)
+                new_location = { "message": f'{"address is required" if "address" not in post_body else ""}{"Name is required" if "name" not in post_body else ""}'}
+        self.wfile.write(json.dumps(new_location).encode())
         # Encode the new animal and send in response
 
     # A method that handles any PUT request.
