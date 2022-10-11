@@ -138,16 +138,33 @@ class HandleRequests(BaseHTTPRequestHandler):
         # the orange squiggle, you'll define the create_animal
         # function next.
         if resource == "animals":
-            new_animal = create_animal(post_body)
+            if "name" in post_body:
+                self._set_headers(201)
+                new_animal = create_animal(post_body)
+            else:
+                self._set_headers(400)
+                new_animal = { "message": f'{"Name is required" if "name" not in post_body else ""} {"Species is required" if "species" not in post_body else ""} {"locationId is required" if "locationId" not in post_body else ""} {"customerId is required" if "customerId" not in post_body else ""}'}
             self.wfile.write(json.dumps(new_animal).encode())
 
         # Add a new employee to the list.
         if resource == "employees":
-            new_employee = create_employee(post_body)
+            if "name" in post_body:
+                self._set_headers(201)
+                new_employee = create_employee(post_body)
+
+            else:
+                self._set_headers(400)
+                new_employee = { "message": f'{"Name is required" if "name" not in post_body else ""}'}
             self.wfile.write(json.dumps(new_employee).encode())
         
         if resource == "customers":
-            new_customer = create_customer(post_body)
+            if "name" in post_body:
+                self._set_headers(201)
+                new_customer = create_customer(post_body)
+
+            else:
+                self._set_headers(400)
+                new_customer = { "message": f'{"Name is required" if "name" not in post_body else ""}'}
             self.wfile.write(json.dumps(new_customer).encode())
         
         if resource == "locations":
@@ -158,7 +175,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             else:
                 self._set_headers(400)
                 new_location = { "message": f'{"address is required" if "address" not in post_body else ""}{"Name is required" if "name" not in post_body else ""}'}
-        self.wfile.write(json.dumps(new_location).encode())
+            self.wfile.write(json.dumps(new_location).encode())
         # Encode the new animal and send in response
 
     # A method that handles any PUT request.
