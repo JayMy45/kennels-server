@@ -239,36 +239,52 @@ class HandleRequests(BaseHTTPRequestHandler):
     # * DELETE METHOD 
     def do_DELETE(self):
         # Set a 204 response code
-        self._set_headers(204)
+        # self._set_headers(204)
+        self._set_headers(405)
+
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
+        #* customer needs to contact company to have data deleted
+        #* so need to send an message along with status (405) Method Not Allowed
+        #* first initialize response
+
+        response = None
+      
+
         # Delete a single animal from the list
         if resource == "animals":
-            delete_animal(id)
-
-        # Encode the new animal and send in response
-        self.wfile.write("".encode())
+            #customers no longer able to delete animals directly...
+            # response initialized above...
+            response = { "message": f"Deleting animals requires contacting the company directly"}
+            
+            # delete_animal(id)
+            self.wfile.write(json.dumps(response).encode())
         
         # Delete a single customer from list
         # ? has to have a separate wfile line.
         if resource == "customers":
-            delete_customer(id)
-
-        self.wfile.write("".encode())
+            response = { "message": f"Deleting customers data requires contacting the company directly"}
+            self.wfile.write(json.dumps(response).encode())
        
         # Delete a single location from list
-        # ? has to have a separate wfile line.
+      
         if resource == "locations":
-            delete_location(id)
+            response = { "message": f"Deleting location data requires contacting the company directly"}
+            self.wfile.write(json.dumps(response).encode())
 
-        self.wfile.write("".encode())
         # Delete a single employee from list
         if resource == "employees":
-            delete_employee(id)
+            response = { "message": f"Deleting employees data requires contacting the company directly"}
+            self.wfile.write(json.dumps(response).encode())
 
-        self.wfile.write("".encode())
+        #* example of working code to delete an employee using the delete_employee() function
+        # if resource == "employees":
+        #     delete_employee(id)
+
+        # self.wfile.write("".encode())
+
 
 # This function is not inside the class. It is the starting
 # point of this application.
