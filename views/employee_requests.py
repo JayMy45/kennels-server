@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Employee
+
 EMPLOYEES = [
     {
         "id": 1,
@@ -6,22 +10,72 @@ EMPLOYEES = [
 ]
 
 def get_all_employees():
-    return EMPLOYEES
+    # return Employees   ~ old way to get all Customer without SQL integration
+    #? Open a connection to the database (be sure to have correct path for sqlite3)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # * SQL query - c abbrev for Customer table
+        db_cursor.execute("""
+        SELECT
+            e.id,
+            e.name,
+            e.address,
+            e.location_Id
+        FROM employee e
+        """)
+
+        #initialize empty list to hold response
+        employees = []
+
+        #convert rows of data into Python list
+        dataset = db_cursor.fetchall()
+
+        #iterate list of dataset  from fetchall()
+        for row in dataset:
+
+            employee = Employee(row['id'],
+                                row['name'],
+                                row['address'],
+                                row['location_Id'])
+
+            employees.append(employee.__dict__)
+
+    return employees
 
 # Function with a single parameter
 def get_single_employee(id):
-    # Variable to hold the found employee, if it exists
-    requested_employee = None
+    # return CUSTOMERS   ~ old way to get all Customer without SQL integration
+    #? Open a connection to the database (be sure to have correct path for sqlite3)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
 
-    # Iterate the EMPLOYEES list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for employee in EMPLOYEES:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if employee["id"] == id:
-            requested_employee = employee
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    return requested_employee
+        db_cursor.execute("""
+        SELECT
+            emp.id,
+            emp.name,
+            emp.address,
+            emp.location_Id
+        FROM employee emp
+        WHERE emp.id = ?
+        """, ( id, ))
+
+        #initialize empty list to hold response
+        data = []
+
+        #convert rows of data into Python list
+        data = db_cursor.fetchone()
+
+        employee = Employee(data['id'],
+                            data['name'],
+                            data['address'],
+                            data['location_Id'])
+
+        return employee.__dict__
 
 
 def create_employee(employee):
