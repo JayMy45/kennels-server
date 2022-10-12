@@ -13,6 +13,7 @@ CREATE TABLE `Customer` (
     `password`    TEXT NOT NULL
 );
 
+DROP TABLE Customer;
 
 CREATE TABLE `Animal` (
 	`id`  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
