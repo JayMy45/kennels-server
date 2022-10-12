@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Customer
+
 CUSTOMERS = [
     {
         "id": 1,
@@ -6,7 +10,43 @@ CUSTOMERS = [
 ]
 
 def get_all_customers():
-    return CUSTOMERS
+    # return CUSTOMERS   ~ old way to get all Customer without SQL integration
+    #? Open a connection to the database (be sure to have correct path for sqlite3)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # * SQL query - c abbrev for Customer table
+        db_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM customer c
+        """)
+
+        #initialize empty list to hold response
+        customers = []
+
+        #convert rows of data into Python list
+        dataset = db_cursor.fetchall()
+
+        #iterate list of dataset  from fetchall()
+        for row in dataset:
+
+            customer = Customer(row['id'],
+                                row['name'],
+                                row['address'],
+                                row['email'],
+                                row['password'])
+
+            customers.append(customer.__dict__)
+
+    return customers
+
 
 # Function with a single parameter
 def get_single_customer(id):
