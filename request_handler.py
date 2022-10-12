@@ -71,7 +71,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "locations":
             if id is not None:
                 response = get_single_location(id)
-
                 if response is not None:
                     self._set_headers(200)
                 else:

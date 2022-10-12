@@ -71,45 +71,46 @@ def get_all_animals():
             # Note that the database fields are specified in
             # exact order of the parameters defined in the
             # Animal class above.
-            animal = Animal(row['id'], row['name'], row['breed'],
-                            row['status'], row['location_id'],
+            animal = Animal(row['id'], 
+                            row['name'], 
+                            row['breed'],
+                            row['status'], 
+                            row['location_id'],
                             row['customer_id'])
 
             animals.append(animal.__dict__)
 
     return animals
 
-# Function with a single parameter
+
 def get_single_animal(id):
-    # Variable to hold the found animal, if it exists
-    requested_animal = None
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    # Iterate the ANIMALS list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for animal in ANIMALS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if animal["id"] == id:
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.breed,
+            a.status,
+            a.location_id,
+            a.customer_id
+        FROM animal a
+        WHERE a.id = ?
+        """, ( id, ))
 
-            # ~ return matching animals
-            requested_animal = animal
+        # Load the single result into memory
+        data = db_cursor.fetchone()
 
-            # ~ return matching locations along with animals
-            matching_location = get_single_location(requested_animal["locationId"])
-            requested_animal["location"] = matching_location
+        # Create an animal instance from the current row
+        animal = Animal(data['id'], data['name'], data['breed'],
+                            data['status'], data['location_id'],
+                            data['customer_id'])
 
-            #* use del (delete) method to remove locationId key when a single animal is searched
-            del animal["locationId"]
-
-            # ~ return matching customers along with animals
-            matching_customer = get_single_customer(requested_animal["customerId"])
-            requested_animal["customer"] = matching_customer
-            
-            #* use del (delete) method to remove customerId key when a single animal is searched
-            del animal["customerId"]
-
-
-    return requested_animal
+        return animal.__dict__
 
 def create_animal(animal):
     # Get the id value of the last animal in the list
@@ -150,3 +151,40 @@ def update_animal(id, new_animal):
             # Found the animal. Update the value.
             ANIMALS[index] = new_animal
             break 
+
+
+
+
+
+
+# # Function with a single parameter
+# def get_single_animal(id):
+#     # Variable to hold the found animal, if it exists
+#     requested_animal = None
+
+#     # Iterate the ANIMALS list above. Very similar to the
+#     # for..of loops you used in JavaScript.
+#     for animal in ANIMALS:
+#         # Dictionaries in Python use [] notation to find a key
+#         # instead of the dot notation that JavaScript used.
+#         if animal["id"] == id:
+
+#             # ~ return matching animals
+#             requested_animal = animal
+
+#             # ~ return matching locations along with animals
+#             matching_location = get_single_location(requested_animal["locationId"])
+#             requested_animal["location"] = matching_location
+
+#             #* use del (delete) method to remove locationId key when a single animal is searched
+#             del animal["locationId"]
+
+#             # ~ return matching customers along with animals
+#             matching_customer = get_single_customer(requested_animal["customerId"])
+#             requested_animal["customer"] = matching_customer
+            
+#             #* use del (delete) method to remove customerId key when a single animal is searched
+#             del animal["customerId"]
+
+
+#     return requested_animal

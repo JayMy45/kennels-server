@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Location
+
 from operator import index
 
 
@@ -15,22 +19,68 @@ LOCATIONS = [
 ]
 
 def get_all_locations():
-    return LOCATIONS
+    # return CUSTOMERS   ~ old way to get all Customer without SQL integration
+    #? Open a connection to the database (be sure to have correct path for sqlite3)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # * SQL query - c abbrev for Customer table
+        db_cursor.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.address
+        FROM location l
+        """)
+
+        #initialize empty list to hold response
+        locations = []
+
+        #convert rows of data into Python list
+        dataset = db_cursor.fetchall()
+
+        #iterate list of dataset  from fetchall()
+        for row in dataset:
+
+            location = Location(row['id'],
+                                row['name'],
+                                row['address'])
+
+            locations.append(location.__dict__)
+
+    return locations
 
 # Function with a single parameter
 def get_single_location(id):
-    # Variable to hold the found location, if it exists
-    requested_location = None
+    # return CUSTOMERS   ~ old way to get all Customer without SQL integration
+    #? Open a connection to the database (be sure to have correct path for sqlite3)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
 
-    # Iterate the ANIMALS list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for location in LOCATIONS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if location["id"] == id:
-            requested_location = location
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    return requested_location
+        db_cursor.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.address
+        FROM location l
+        WHERE l.id = ?
+        """, ( id, ))
+
+        #initialize empty list to hold response
+        location = []
+
+        #convert rows of data into Python list
+        data = db_cursor.fetchone()
+
+        location = Location(data['id'],
+                            data['name'],
+                            data['address'])
+
+        return location.__dict__
 
 # condensed function to create and add "id". Refer to animals_request.py for expanded explanation view.
 def create_location(location):
