@@ -1,5 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse, parse_qs
 from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
 from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
 from views import get_all_locations, get_single_location, create_location, delete_location, update_location

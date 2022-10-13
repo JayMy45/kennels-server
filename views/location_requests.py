@@ -24,6 +24,7 @@ def get_all_locations():
     with sqlite3.connect("./kennel.sqlite3") as conn:
 
         conn.row_factory = sqlite3.Row
+        #~ conn.cursor - id a database cursor used to execute SQL statements and fetch results from SQL queries
         db_cursor = conn.cursor()
 
         # * SQL query - c abbrev for Customer table
