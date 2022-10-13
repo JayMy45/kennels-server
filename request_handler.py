@@ -1,9 +1,9 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
-from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
-from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
-from views import get_all_locations, get_single_location, create_location, delete_location, update_location
+from views import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal, get_animal_by_status
+from views import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee, get_employee_by_employeeId
+from views import get_all_locations, get_single_location, create_location, delete_location, update_location, get_location_by_locationId
 from views import get_all_customers, get_single_customer, create_customer, delete_customer, update_customer, get_customers_by_email, get_customers_by_name
 
 
@@ -35,9 +35,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         except (IndexError, ValueError):
             pass
         return (resource, pk)
-
-    
-    # Here's a class function
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
@@ -105,12 +102,25 @@ class HandleRequests(BaseHTTPRequestHandler):
             (resource, query) = parsed
 
             # see if the query dictionary has an email key
-            if query.get('name') and resource == 'customers':
-                self._set_headers(200)
-                response = get_customers_by_name(query['name'][0])
-            else:
+            if query.get('email') and resource == 'customers':
                 self._set_headers(200)
                 response = get_customers_by_email(query['email'][0])
+
+            elif query.get('name') and resource == 'customers':
+                self._set_headers(200)
+                response = get_customers_by_name(query['name'][0])
+
+            elif query.get('id') and resource == 'locations':
+                self._set_headers(200)
+                response = get_location_by_locationId(query['id'][0])
+            
+            elif query.get('id') and resource == 'employees':
+                self._set_headers(200)
+                response = get_employee_by_employeeId(query['id'][0])
+
+            elif query.get('status') and resource == 'animals':
+                self._set_headers(200)
+                response = get_animal_by_status(query['status'][0])
 
         self.wfile.write(json.dumps(response).encode())
 
