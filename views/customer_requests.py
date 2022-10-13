@@ -93,12 +93,13 @@ def create_customer(customer):
 
 # condensed code...refer to animal_request for details
 def delete_customer(id):
-    customer_index = -1
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            customer_index = index
-        if customer_index >= 0:
-            CUSTOMERS.pop(customer_index)
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        DELETE FROM customer
+        WHERE id = ?
+        """, (id, ))
 
 def update_customer(id, new_customer):
     for index, customer in enumerate(CUSTOMERS):
@@ -159,6 +160,15 @@ def get_customers_by_name(name):
             customers.append(customer.__dict__)
 
     return customers
+
+
+
+
+
+
+
+
+
 
 
 #! First iteration of get_single_customer() function.  So see matching refer to animal_request.py file (bottom)

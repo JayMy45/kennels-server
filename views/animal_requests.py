@@ -105,10 +105,13 @@ def get_single_animal(id):
         data = db_cursor.fetchone()
 
         # Create an animal instance from the current row
-        animal = Animal(data['id'], data['name'], data['breed'],
-                            data['status'], data['location_id'],
-                            data['customer_id'])
-
+        animal = Animal(
+                        data['id'], 
+                        data['name'], 
+                        data['breed'],
+                        data['status'], 
+                        data['location_id'],
+                        data['customer_id'])
         return animal.__dict__
 
 def create_animal(animal):
@@ -128,19 +131,14 @@ def create_animal(animal):
     return animal
 
 def delete_animal(id):
-    # Initial -1 value for animal index, in case one isn't found
-    animal_index = -1
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        # The sql DELETE command only needs the "id"  or a target to delete the row.
+        db_cursor.execute("""
+        DELETE FROM animal
+        WHERE id = ?
+        """, (id, ))
 
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            # Found the animal. Store the current index.
-            animal_index = index
-
-    # If the animal was found, use pop(int) to remove it from list
-    if animal_index >= 0:
-        ANIMALS.pop(animal_index)
 
 def update_animal(id, new_animal):
     # Iterate the ANIMALS list, but use enumerate() so that
@@ -194,7 +192,7 @@ def get_animal_by_status(status):
 
 
 
-
+#? functions that have been udpdated
 # # Function with a single parameter
 # def get_single_animal(id):
 #     # Variable to hold the found animal, if it exists
@@ -226,3 +224,18 @@ def get_animal_by_status(status):
 
 
 #     return requested_animal
+
+# def delete_animal(id):
+#     # Initial -1 value for animal index, in case one isn't found
+#     animal_index = -1
+
+#     # Iterate the ANIMALS list, but use enumerate() so that you
+#     # can access the index value of each item
+#     for index, animal in enumerate(ANIMALS):
+#         if animal["id"] == id:
+#             # Found the animal. Store the current index.
+#             animal_index = index
+
+#     # If the animal was found, use pop(int) to remove it from list
+#     if animal_index >= 0:
+#         ANIMALS.pop(animal_index)
