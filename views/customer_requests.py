@@ -2,6 +2,7 @@ import sqlite3
 import json
 from models import Customer
 
+
 CUSTOMERS = [
     {
         "id": 1,
@@ -102,10 +103,33 @@ def delete_customer(id):
         """, (id, ))
 
 def update_customer(id, new_customer):
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            CUSTOMERS[index] = new_customer
-            break
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Customer
+            SET
+                name = ?,
+                address = ?,
+                email = ?,
+                password = ?
+        WHERE id = ?
+        """, (new_customer['name'], 
+              new_customer['address'],
+              new_customer['email'], 
+              new_customer['password'],
+              id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+    # Forces 404 response by main module
+        return False
+    else:
+    # Forces 204 response by main module
+        return True
 
 def get_customers_by_email(email):
 
