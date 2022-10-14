@@ -125,7 +125,6 @@ def update_location(id, new_location):
     # Forces 204 response by main module
         return True
 
-
 def get_location_by_locationId(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row

@@ -3,7 +3,7 @@ CREATE TABLE `Location` (
 	`name`	TEXT NOT NULL,
 	`address`	TEXT NOT NULL
 );
-
+DROP TABLE Location;
 
 CREATE TABLE `Customer` (
     `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -12,7 +12,6 @@ CREATE TABLE `Customer` (
     `email`    TEXT NOT NULL,
     `password`    TEXT NOT NULL
 );
-
 DROP TABLE Customer;
 
 CREATE TABLE `Animal` (
@@ -26,6 +25,7 @@ CREATE TABLE `Animal` (
 	FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`)
 );
 
+DROP TABLE Animal;
 
 CREATE TABLE `Employee` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -74,3 +74,33 @@ SELECT
 	--animal a (defines animals in a variable)
 FROM animal a
 WHERE a.id = 4
+
+SELECT
+    a.id,
+    a.name,
+    a.breed,
+    a.status,
+    a.location_id,
+    a.customer_id,
+    l.name location_name,
+    l.address location_address
+FROM Animal a
+JOIN Location l
+    ON l.id = a.location_id
+
+SELECT
+	a.id,
+	a.name,
+	a.breed,
+	a.status,
+	a.location_id,
+	a.customer_id,
+	l.name location_name,
+	l.address location_address,
+	c.name customer_name,
+	c.address customer_address
+FROM Animal a
+JOIN Location l
+	ON l.id = a.location_id
+JOIN Customer c
+	ON c.id = a.customer_id
