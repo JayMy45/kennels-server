@@ -37,7 +37,6 @@ ANIMALS = [
     }
 ]
 
-
 def get_all_animals():
     # Open a connection to the database
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -62,7 +61,7 @@ def get_all_animals():
         FROM Animal a
         JOIN Location l
             ON l.id = a.location_id
-        JOIN Customer c
+        LEFT JOIN Customer c
             ON c.id = a.customer_id
         """)
 
@@ -86,11 +85,11 @@ def get_all_animals():
                             row['location_id'],
                             row['customer_id'])
 
-            location = Location(row['id'],
+            location = Location(row['location_id'],
                                 row['location_name'],
                                 row['location_address'])
 
-            customer = Customer(row['id'],
+            customer = Customer(row['customer_id'],
                                 row['customer_name'],
                                 row['customer_address'])
 
@@ -115,8 +114,16 @@ def get_single_animal(id):
             a.breed,
             a.status,
             a.location_id,
-            a.customer_id
-        FROM animal a
+            a.customer_id,
+            l.name location_name,
+            l.address location_address,
+            c.name customer_name,
+            c.address customer_address
+        FROM Animal a
+        JOIN Location l
+            ON l.id = a.location_id
+        LEFT JOIN Customer c
+            ON c.id = a.customer_id
         WHERE a.id = ?
         """, ( id, ))
 
@@ -131,6 +138,18 @@ def get_single_animal(id):
                         data['status'], 
                         data['location_id'],
                         data['customer_id'])
+
+        location = Location(data['location_id'],
+                            data['location_name'],
+                            data['location_address'])
+
+        customer = Customer(data['customer_id'],
+                            data['customer_name'],
+                            data['customer_address'])
+
+        animal.location = location.__dict__
+        animal.customer = customer.__dict__
+
         return animal.__dict__
 
 def create_animal(animal):
@@ -152,7 +171,7 @@ def create_animal(animal):
 def delete_animal(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
-        # The sql DELETE command only needs the "id"  or a target to delete the row.
+        # The sql DELETE command only needs the "id"  or a target to delete the data.
         db_cursor.execute("""
         DELETE FROM animal
         WHERE id = ?

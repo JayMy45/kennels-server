@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Employee
+from models import Employee, Location
 
 EMPLOYEES = [
     {
@@ -23,8 +23,12 @@ def get_all_employees():
             e.id,
             e.name,
             e.address,
-            e.location_Id
-        FROM employee e
+            e.location_Id,
+            l.name location_name,
+            l.address location_address
+        FROM Employee e
+        JOIN Location l
+            ON l.id = e.location_id
         """)
 
         #initialize empty list to hold response
@@ -40,6 +44,13 @@ def get_all_employees():
                                 row['name'],
                                 row['address'],
                                 row['location_Id'])
+
+            location = Location(row['location_id'],
+                                row['location_name'],
+                                row['location_address'])
+
+            
+            employee.location = location.__dict__
 
             employees.append(employee.__dict__)
 
@@ -59,8 +70,12 @@ def get_single_employee(id):
             emp.id,
             emp.name,
             emp.address,
-            emp.location_Id
-        FROM employee emp
+            emp.location_Id,
+            l.name location_name,
+            l.address location_address
+        FROM Employee emp
+        JOIN Location l
+            ON l.id = emp.location_id
         WHERE emp.id = ?
         """, ( id, ))
 
@@ -74,6 +89,13 @@ def get_single_employee(id):
                             data['name'],
                             data['address'],
                             data['location_Id'])
+
+        location = Location(data['location_id'],
+                            data['location_name'],
+                            data['location_address'])
+
+        employee.location = location.__dict__
+                            
         return employee.__dict__
 
 
@@ -141,8 +163,10 @@ def get_employee_by_employeeId(id):
             emp.id,
             emp.name,
             emp.address,
-            emp.location_Id
-        FROM employee emp
+            emp.location_Id,
+            l.name location_name,
+            l.address location_address
+        FROM Employee emp
         WHERE emp.id = ?
         """, ( id, ))
 
