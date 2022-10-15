@@ -162,8 +162,10 @@ def create_animal(new_animal):
             ( name, breed, status, location_id, customer_id )
         VALUES
             ( ?, ?, ?, ?, ?);
-        """, (new_animal['name'], new_animal['breed'],
-              new_animal['status'], new_animal['location_id'],
+        """, (new_animal['name'], 
+              new_animal['breed'],
+              new_animal['status'], 
+              new_animal['location_id'],
               new_animal['customer_id'], ))
 
         # The `lastrowid` property on the cursor will return
@@ -175,7 +177,6 @@ def create_animal(new_animal):
         # was sent by the client so that the client sees the
         # primary key in the response.
         new_animal['id'] = id
-
 
     return new_animal
 
