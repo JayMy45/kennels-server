@@ -152,7 +152,6 @@ def get_single_animal(id):
 
         return animal.__dict__
 
-
 def create_animal(new_animal):
     with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()

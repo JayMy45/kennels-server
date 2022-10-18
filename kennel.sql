@@ -3,6 +3,7 @@ CREATE TABLE `Location` (
 	`name`	TEXT NOT NULL,
 	`address`	TEXT NOT NULL
 );
+
 DROP TABLE Location;
 
 CREATE TABLE `Customer` (
@@ -36,8 +37,27 @@ CREATE TABLE `Employee` (
 
 );
 
+CREATE TABLE `Assignment` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`animal_id`	INTEGER NOT NULL,
+	`employee_id`	INTEGER NOT NULL,
+	FOREIGN KEY(`animal_id`) REFERENCES `Animal`(`id`),
+	FOREIGN KEY(`employee_id`) REFERENCES `Employee`(`id`)
+);
+
+DROP TABLE Assignment;
+
 INSERT INTO `Location` VALUES (null, 'Nashville North', "64 Washington Heights");
 INSERT INTO `Location` VALUES (null, 'Nashville South', "101 Penn Ave");
+
+INSERT INTO `Assigment` VALUES (null, 1, 1);
+INSERT INTO `Assigment` VALUES (null, 2, 2);
+INSERT INTO `Assigment` VALUES (null, 3, 3);
+INSERT INTO `Assigment` VALUES (null, 4, 4);
+INSERT INTO `Assigment` VALUES (null, 5, 5);
+INSERT INTO `Assigment` VALUES (null, 6, 6);
+INSERT INTO `Assigment` VALUES (null, 7, 7);
+INSERT INTO `Assigment` VALUES (null, 8, 8);
 
 
 INSERT INTO `Employee` VALUES (null, "Madi Peper", "35498 Madison Ave", 1);
@@ -137,3 +157,15 @@ JOIN Location l
 SELECT * 
 FROM Animal
 ORDER BY id DESC;
+
+-- Bridge Table for Employee & Animals
+SELECT
+   	e.id,
+	e.name,
+	e.address,
+	e.location_Id,
+    l.animal_id animal_id,
+    l.employee_id employee_id
+FROM Employee e
+LEFT JOIN Assignment l
+    ON l.location_id = e.location_id

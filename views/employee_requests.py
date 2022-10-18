@@ -121,8 +121,9 @@ def create_employee(new_employee):
         # was sent by the client so that the client sees the
         # primary key in the response.
         new_employee['id'] = id
-        
+
     return new_employee
+
 
 def delete_employee(id):
     with sqlite3.connect("./kennel.sqlite3") as conn:

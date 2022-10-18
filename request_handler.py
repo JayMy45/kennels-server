@@ -227,13 +227,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.wfile.write("".encode())
       
         #Encode the new locations and send in response
-        if resource == "customers":
-            success = update_customer(id, post_body)
-            if success:
-                self._set_headers(204)
-            else:
-                self._set_headers(404)
-        self.wfile.write("".encode())
+        # if resource == "customers":
+        #     success = update_customer(id, post_body)
+        #     if success:
+        #         self._set_headers(204)
+        #     else:
+        #         self._set_headers(404)
+        # self.wfile.write("".encode())
   
 
     def _set_headers(self, status):
